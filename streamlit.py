@@ -15,6 +15,10 @@ def save_uploaded_files(uploaded_files):
 content_image = st.file_uploader("Choose a content image")
 style_image = st.file_uploader("Choose a style image")
 
+@st.cache
+def load_model():
+    return hub.load('https://tfhub.dev/google/magenta/arbitrary-image-stylization-v1-256/2')
+
 if content_image is not None and style_image is not None:
     # bytes_data = uploaded_file.read()
     # st.write("filename:", uploaded_file.name)
@@ -35,7 +39,7 @@ if content_image is not None and style_image is not None:
     content_image = load_img('./content.png')
     style_image = load_img('./style.png')
 
-    hub_model = hub.load('https://tfhub.dev/google/magenta/arbitrary-image-stylization-v1-256/2')
+    hub_model = load_model()
     stylized_image = hub_model(tf.constant(content_image), tf.constant(style_image))[0]
     generated_image = tensor_to_image(stylized_image)
     st.image(generated_image)
