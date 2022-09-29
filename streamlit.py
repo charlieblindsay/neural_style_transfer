@@ -13,128 +13,153 @@ def save_uploaded_files(uploaded_files):
         file_name_extension = f'{file_name}.png'
         with open(file_name_extension,"wb") as f:
             f.write(file['img'].getbuffer())
-    st.success("Saved Files")
 
-content_image = st.file_uploader("Choose a content image")
-style_image = st.file_uploader("Choose a style image")
+form = st.form(key='my_form')
+
+content_image = form.file_uploader("Choose a content image")
+style_image = form.file_uploader("Choose a style image")
+
+possible_content_layers = ['block1_conv1', 'block1_conv2', 'block2_conv1', 'block2_conv2', 'block3_conv1', 'block3_conv2', 'block3_conv3', 'block3_conv4', 'block4_conv1', 'block4_conv2', 'block4_conv3', 'block4_conv4', 'block5_conv1', 'block5_conv2', 'block5_conv3', 'block5_conv4']
+content_layer_input = form.selectbox(label='A content layer is chosen to see how similar the \'content\' of the content and generated images are. Choose how deep into the CNN you want the content layer to be:', options=possible_content_layers, index=5)
+
+style_weight_input = form.slider(label='Choose how closely you want the style of the generated image to match that of the style image:', value=3, step=1, min_value=0, max_value=5)
+
+submit_button = form.form_submit_button(label='Submit')
 
 if content_image is not None and style_image is not None:
-    save_uploaded_files([{'type': 'content', 'img': content_image}, {'type': 'style', 'img': style_image}])
+    with st.spinner('Generating Image. This make take a while...'):
+        style_weight= float(f'1e{style_weight_input - 5}')
+        content_weight=1e3
 
-    content_image = load_img('./content.png')
-    style_image = load_img('./style.png')
+        save_uploaded_files([{'type': 'content', 'img': content_image}, {'type': 'style', 'img': style_image}])
 
-    content_layers = ['block2_conv2'] 
+        content_image = load_img('./content.png')
+        style_image = load_img('./style.png')
 
-    style_layers = ['block1_conv1',
-                    'block2_conv1',
-                    'block3_conv1', 
-                    'block4_conv1', 
-                    'block5_conv1']
+        content_layers = [content_layer_input]
 
-    num_content_layers = len(content_layers)
-    num_style_layers = len(style_layers)
+        style_layers = ['block1_conv1',
+                        'block2_conv1',
+                        'block3_conv1', 
+                        'block4_conv1', 
+                        'block5_conv1']
 
-    def load_model():
-        vgg = tf.keras.applications.VGG19(include_top=False, weights='imagenet')
-        vgg.trainable = False
-        return vgg
-    
-    def vgg_layers(layer_names):
-        """ Creates a VGG model that returns a list of intermediate output values."""
-        # Load our model. Load pretrained VGG, trained on ImageNet data
-        vgg = load_model()
+        num_content_layers = len(content_layers)
+        num_style_layers = len(style_layers)
 
-        outputs = [vgg.get_layer(name).output for name in layer_names]
+        def load_model():
+            vgg = tf.keras.applications.VGG19(include_top=False, weights='imagenet')
+            vgg.trainable = False
+            return vgg
+        
+        def vgg_layers(layer_names):
+            """ Creates a VGG model that returns a list of intermediate output values."""
+            # Load our model. Load pretrained VGG, trained on ImageNet data
+            vgg = load_model()
 
-        model = tf.keras.Model([vgg.input], outputs)
-        return model
+            outputs = [vgg.get_layer(name).output for name in layer_names]
 
-    def gram_matrix(input_tensor):
-        result = tf.linalg.einsum('bijc,bijd->bcd', input_tensor, input_tensor)
-        input_shape = tf.shape(input_tensor)
-        num_locations = tf.cast(input_shape[1]*input_shape[2], tf.float32)
-        return result/(num_locations)
+            model = tf.keras.Model([vgg.input], outputs)
+            return model
 
-    class StyleContentModel(tf.keras.models.Model):
-        def __init__(self, style_layers, content_layers):
-            super(StyleContentModel, self).__init__()
-            self.vgg = vgg_layers(style_layers + content_layers)
-            self.style_layers = style_layers
-            self.content_layers = content_layers
-            self.num_style_layers = len(style_layers)
-            self.vgg.trainable = False
+        def gram_matrix(input_tensor):
+            result = tf.linalg.einsum('bijc,bijd->bcd', input_tensor, input_tensor)
+            input_shape = tf.shape(input_tensor)
+            num_locations = tf.cast(input_shape[1]*input_shape[2], tf.float32)
+            return result/(num_locations)
 
-        def call(self, inputs):
-            "Expects float input in [0,1]"
-            inputs = inputs*255.0
-            preprocessed_input = tf.keras.applications.vgg19.preprocess_input(inputs)
-            outputs = self.vgg(preprocessed_input)
-            style_outputs, content_outputs = (outputs[:self.num_style_layers],
-                                            outputs[self.num_style_layers:])
+        class StyleContentModel(tf.keras.models.Model):
+            def __init__(self, style_layers, content_layers):
+                super(StyleContentModel, self).__init__()
+                self.vgg = vgg_layers(style_layers + content_layers)
+                self.style_layers = style_layers
+                self.content_layers = content_layers
+                self.num_style_layers = len(style_layers)
+                self.vgg.trainable = False
 
-            style_outputs = [gram_matrix(style_output)
-                            for style_output in style_outputs]
+            def call(self, inputs):
+                "Expects float input in [0,1]"
+                inputs = inputs*255.0
+                preprocessed_input = tf.keras.applications.vgg19.preprocess_input(inputs)
+                outputs = self.vgg(preprocessed_input)
+                style_outputs, content_outputs = (outputs[:self.num_style_layers],
+                                                outputs[self.num_style_layers:])
 
-            content_dict = {content_name: value
-                            for content_name, value
-                            in zip(self.content_layers, content_outputs)}
+                style_outputs = [gram_matrix(style_output)
+                                for style_output in style_outputs]
 
-            style_dict = {style_name: value
-                        for style_name, value
-                        in zip(self.style_layers, style_outputs)}
+                content_dict = {content_name: value
+                                for content_name, value
+                                in zip(self.content_layers, content_outputs)}
 
-            return {'content': content_dict, 'style': style_dict}
+                style_dict = {style_name: value
+                            for style_name, value
+                            in zip(self.style_layers, style_outputs)}
 
-    extractor = StyleContentModel(style_layers, content_layers)
+                return {'content': content_dict, 'style': style_dict}
 
-    results = extractor(tf.constant(content_image))
+        extractor = StyleContentModel(style_layers, content_layers)
 
-    style_targets = extractor(style_image)['style']
-    content_targets = extractor(content_image)['content']
+        results = extractor(tf.constant(content_image))
 
-    image = tf.Variable(content_image)
+        style_targets = extractor(style_image)['style']
+        content_targets = extractor(content_image)['content']
 
-    def clip_0_1(image):
-        return tf.clip_by_value(image, clip_value_min=0.0, clip_value_max=1.0)
+        image = tf.Variable(content_image)
 
-    opt = tf.keras.optimizers.Adam(learning_rate=0.02, beta_1=0.99, epsilon=1e-1)
+        def clip_0_1(image):
+            return tf.clip_by_value(image, clip_value_min=0.0, clip_value_max=1.0)
 
-    style_weight=1e-2
-    content_weight=1e3
+        opt = tf.keras.optimizers.Adam(learning_rate=0.02, beta_1=0.99, epsilon=1e-1)
 
-    def style_content_loss(outputs):
-        style_outputs = outputs['style']
-        content_outputs = outputs['content']
-        style_loss = tf.add_n([tf.reduce_mean((style_outputs[name]-style_targets[name])**2) 
-                            for name in style_outputs.keys()])
-        style_loss *= style_weight / num_style_layers
 
-        content_loss = tf.add_n([tf.reduce_mean((content_outputs[name]-content_targets[name])**2) 
-                                for name in content_outputs.keys()])
-        content_loss *= content_weight / num_content_layers
-        loss = style_loss + content_loss
-        return loss
+        def style_content_loss(outputs):
+            style_outputs = outputs['style']
+            content_outputs = outputs['content']
+            style_loss = tf.add_n([tf.reduce_mean((style_outputs[name]-style_targets[name])**2) 
+                                for name in style_outputs.keys()])
+            style_loss *= style_weight / num_style_layers
 
-    @tf.function()
-    def train_step(image):
-        with tf.GradientTape() as tape:
-            outputs = extractor(image)
-            loss = style_content_loss(outputs)
+            content_loss = tf.add_n([tf.reduce_mean((content_outputs[name]-content_targets[name])**2) 
+                                    for name in content_outputs.keys()])
+            content_loss *= content_weight / num_content_layers
+            loss = style_loss + content_loss
+            return loss
 
-        grad = tape.gradient(loss, image)
-        opt.apply_gradients([(grad, image)])
-        image.assign(clip_0_1(image))
+        @tf.function()
+        def train_step(image):
+            with tf.GradientTape() as tape:
+                outputs = extractor(image)
+                loss = style_content_loss(outputs)
 
-    epochs = 5 
-    steps_per_epoch = 1
+            grad = tape.gradient(loss, image)
+            opt.apply_gradients([(grad, image)])
+            image.assign(clip_0_1(image))
+        
+        epochs = 10
+        steps_per_epoch = 3
 
-    step = 0
-    for n in range(epochs):
-        for m in range(steps_per_epoch):
-            step += 1
-            train_step(image)
-    
-    generated_image = tensor_to_image(image)
+        step = 0
+        for n in range(epochs):
+            for m in range(steps_per_epoch):
+                step += 1
+                train_step(image)
+        
+        generated_image = tensor_to_image(image)
 
-    st.image(generated_image)
+        content_image = tensor_to_image(content_image)
+        style_image = tensor_to_image(style_image)
+
+        cols = st.columns(2)
+
+        titles = ['Content Image', 'Style Image']
+        images = [content_image, style_image]
+
+        for i in range(2):
+            cols[i].title(titles[i])
+            cols[i].image(images[i])
+
+        st.title('Generated Image')
+        st.image(generated_image)
+else:
+    st.warning('Please upload files for the content and style image')
