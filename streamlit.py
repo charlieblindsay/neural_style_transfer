@@ -20,19 +20,6 @@ def load_model():
     return hub.load('https://tfhub.dev/google/magenta/arbitrary-image-stylization-v1-256/2')
 
 if content_image is not None and style_image is not None:
-    # bytes_data = uploaded_file.read()
-    # st.write("filename:", uploaded_file.name)
-    # st.write(bytes_data)
-
-    # dataframe = pd.read_csv(uploaded_file)
-    # st.dataframe(data=dataframe)
-
-    # file_details = {"FileName":uploaded_file.name,"FileType":uploaded_file.type}
-    # st.write(file_details)
-    # img = load_image(uploaded_file)
-    # st.image(img)
-
-    # content_path = tf.keras.utils.get_file('YellowLabradorLooking_new.jpg', 'https://storage.googleapis.com/download.tensorflow.org/example_images/YellowLabradorLooking_new.jpg')
 
     save_uploaded_files([{'type': 'content', 'img': content_image}, {'type': 'style', 'img': style_image}])
 
