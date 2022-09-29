@@ -14,11 +14,16 @@ def save_uploaded_files(uploaded_files):
         with open(file_name_extension,"wb") as f:
             f.write(file['img'].getbuffer())
 
+st.title('Neural Style Transfer Demo')
 form = st.form(key='my_form')
+
+form.subheader('File upload')
 
 content_image = form.file_uploader("Choose a content image")
 style_image = form.file_uploader("Choose a style image")
 
+#### OPTIONAL CONFIGURATION
+form.subheader('Optional Configuration')
 possible_content_layers = ['block1_conv1', 'block1_conv2', 'block2_conv1', 'block2_conv2', 'block3_conv1', 'block3_conv2', 'block3_conv3', 'block3_conv4', 'block4_conv1', 'block4_conv2', 'block4_conv3', 'block4_conv4', 'block5_conv1', 'block5_conv2', 'block5_conv3', 'block5_conv4']
 content_layer_input = form.selectbox(label='A content layer is chosen to see how similar the \'content\' of the content and generated images are. Choose how deep into the CNN you want the content layer to be:', options=possible_content_layers, index=5)
 
