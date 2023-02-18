@@ -26,7 +26,6 @@ st.title('Neural Style Transfer Demo')
 st.write('After the user has uploaded a content image and a style image, an image with the \'content\' of the content image and the \'style\' of style image is generated.')
 
 st.subheader('File upload')
-
 content_image = st.file_uploader("Choose a content image. This should be a photo.")
 style_image = st.file_uploader('Choose a style image. This should be a piece of art, e.g. a painting')
 
