@@ -27,14 +27,6 @@ st.write('After the user has uploaded a content image and a style image, an imag
 
 st.subheader('File upload')
 
-st.write(np.__version__)
-st.write(PIL.__version__)
-st.write(tf.__version__)
-st.write(st.__version__)
-
-
-
-
 content_image = st.file_uploader("Choose a content image. This should be a photo.")
 style_image = st.file_uploader('Choose a style image. This should be a piece of art, e.g. a painting')
 
