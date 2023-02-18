@@ -1,22 +1,53 @@
 import streamlit as st
 import tensorflow as tf
 import tensorflow_hub as hub
-import matplotlib.pyplot as plt
-import numpy as np
 
 from utils import *
 
-# Load content and style images (see example in the attached colab).
-content_image = load_img('./content.png')
-style_image = load_img('./style.png')
-# Convert to float32 numpy array, add batch dimension, and normalize to range [0, 1]. Example using numpy:
-# Optionally resize the images. It is recommended that the style image is about
-# 256 pixels (this size was used when training the style transfer network).
-# The content image can be any size.
+@st.cache # saves the output 
+def load_model():
+    return hub.load('https://tfhub.dev/google/magenta/arbitrary-image-stylization-v1-256/2')
 
-# Load image stylization module.
-hub_module = tf.saved_model.load.load('model.pb')
+def save_uploaded_files(uploaded_files):
+    for file in uploaded_files:
+        file_name = file['type']
+        file_name_extension = f'{file_name}.png'
+        with open(file_name_extension,"wb") as f:
+            f.write(file['img'].getbuffer())
 
-# Stylize image.
-outputs = hub_module(tf.constant(content_image), tf.constant(style_image))
-stylized_image = outputs[0]
+st.title('Neural Style Transfer Demo')
+st.write('After the user has uploaded a content image and a style image, an image with the \'content\' of the content image and the \'style\' of style image is generated.')
+
+st.subheader('File upload')
+
+content_image = st.file_uploader("Choose a content image. This should be a photo.")
+style_image = st.file_uploader('Choose a style image. This should be a piece of art, e.g. a painting')
+
+if content_image is not None and style_image is not None:
+    with st.spinner('Generating Image. This make take a while...'):
+        save_uploaded_files([{'type': 'content', 'img': content_image}, {'type': 'style', 'img': style_image}])
+
+        content_image = load_img('./content.png')
+        style_image = load_img('./style.png')
+
+        hub_model = tf.saved_model.load('model')
+        stylized_image = hub_model(tf.constant(content_image), tf.constant(style_image))[0]
+        generated_image = tensor_to_image(stylized_image)
+
+        content_image = tensor_to_image(content_image)
+        style_image = tensor_to_image(style_image)
+
+        cols = st.columns(2)
+
+        titles = ['Content Image', 'Style Image']
+        images = [content_image, style_image]
+
+        for i in range(2):
+            cols[i].title(titles[i])
+            cols[i].image(images[i])
+
+        st.title('Generated Image')
+        st.image(generated_image)
+
+else:
+    st.warning('Please upload files for the content and style image')
