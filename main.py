@@ -4,9 +4,9 @@ import tensorflow_hub as hub
 
 from utils import *
 
-@st.cache # saves the output 
+@st.cache # saves the output
 def load_model():
-    return hub.load('https://tfhub.dev/google/magenta/arbitrary-image-stylization-v1-256/2')
+    return tf.saved_model.load('model')
 
 def save_uploaded_files(uploaded_files):
     for file in uploaded_files:
@@ -30,7 +30,7 @@ if content_image is not None and style_image is not None:
         content_image = load_img('./content.png')
         style_image = load_img('./style.png')
 
-        hub_model = tf.saved_model.load('model')
+        hub_model = load_model()
         stylized_image = hub_model(tf.constant(content_image), tf.constant(style_image))[0]
         generated_image = tensor_to_image(stylized_image)
 
