@@ -2,7 +2,7 @@
 
 After the user has uploaded a content image and a style image, an image with the 'content' of the content image and the 'style' of style image is generated. For example:
 
-![alt text](nst_app.jpg)
+![alt text](README_images/nst_app.jpg)
 
 ## User Instructions
 ### How to generate your own images
@@ -11,7 +11,7 @@ After the user has uploaded a content image and a style image, an image with the
 3. Wait for the image to be generated.
 
 #### Screen recording showing above steps
-![](https://github.com/charlieblindsay/neural_style_transfer/blob/main/screen%20recording.gif)
+![](https://github.com/charlieblindsay/neural_style_transfer/blob/main/README_images/screen%20recording.gif)
 
 ### How is this done?
 Machine Learning!
@@ -29,7 +29,7 @@ I think this mathematical defition of the 'style' of an image is intriguing; 2 i
 The CNN architecture used is called VGG-19. The weights in each layer are pre-trained on imagenet data.
 
 ##### VGG-19 Architecture
-![alt text](VGG-19.png)
+![alt text](README_images/VGG-19.png)
 
 To learn more about CNNs, click this link: https://towardsdatascience.com/a-comprehensive-guide-to-convolutional-neural-networks-the-eli5-way-3bd2b1164a53
 
