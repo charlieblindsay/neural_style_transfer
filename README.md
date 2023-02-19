@@ -2,8 +2,7 @@
 
 Streamlit app: https://charlieblindsay-neural-style-transfer-app-5cov8f.streamlit.app/
 
-![]([https://github.com/Your_Repository_Name/Your_GIF_Name.gif](https://github.com/charlieblindsay/neural_style_transfer/blob/main/screen_recording.gif))
-
+![](https://github.com/charlieblindsay/neural_style_transfer/blob/main/screen_recording.gif)
 
 ![alt text](nst_app.jpg)
 
