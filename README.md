@@ -45,6 +45,7 @@ To run the streamlit app locally, enter this command in the terminal: streamlit 
 ### Folders
 - model folder: Contains pre-trained model and its calculations. The model is explained here: https://www.tensorflow.org/tutorials/generative/style_transfer and can be downloaded here: https://tfhub.dev/google/magenta/arbitrary-image-stylization-v1-256/2
 - tests folder: Contains test image and its equivalent tensor. This is to test the load_img_tensor_from_path function.
+- README_images: images used in the README.md
 
 ### Future work
 - Add option for the user to choose which layer is chosen to compare the 'content' of the content image and generated image. Choosing earlier layers would lead to high level features being compared, and vice-versa for choosing later layers.
