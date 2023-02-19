@@ -6,7 +6,7 @@ streamlit run c:/PATH/TO/CURRENT/DIRECTORY/app.py
 import streamlit as st
 import tensorflow as tf
 
-from utils import *
+from utils import save_uploaded_files, load_img_from_path, convert_tensor_to_img
 
 @st.cache_resource # saves the output
 def load_model(path: str):
