@@ -39,6 +39,7 @@ To run the streamlit app locally, enter this command in the terminal: streamlit 
 ### Files
 - app.py: Streamlit app
 - utils.py: Contains utility functions used in app.py
+- test_utils.py: Contains tests for functions in utils.py. Run this file to run tests.
 - requirements.txt: Contains required Python modules. This file is necessary for hosting the app with Streamlit.
 - model folder: Contains pre-trained model from https://www.tensorflow.org/tutorials/generative/style_transfer
 

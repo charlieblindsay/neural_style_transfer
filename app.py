@@ -52,8 +52,8 @@ if content_image is not None and style_image is not None:
     with st.spinner('Generating Image. This may take a while...'):
         save_uploaded_files([{'type': 'content', 'img': content_image}, {'type': 'style', 'img': style_image}])
 
-        content_image = load_img_from_path('./content.png')
-        style_image = load_img_from_path('./style.png')
+        content_image = load_img_tensor_from_path('./content.png')
+        style_image = load_img_tensor_from_path('./style.png')
 
         pretrained_model = load_model('model')
         

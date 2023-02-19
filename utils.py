@@ -1,5 +1,5 @@
 """ Contains utility functions used in app.py:
-- load_img_from_path
+- load_img_tensor_from_path
 - convert_tensor_to_img
 """
 
@@ -7,7 +7,7 @@ import tensorflow as tf
 import numpy as np
 import PIL
 
-def load_img_from_path(path_to_img: str):
+def load_img_tensor_from_path(path_to_img: str):
   """Returns a tensor of the image at the inputted file path.
   The tensor has the correct dimensions for being an input into the VGG-19 model.
 
