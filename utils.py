@@ -1,27 +1,67 @@
+""" Contains utility functions used in app.py:
+- save_uploaded_files
+- load_img_from_path
+- convert_tensor_to_img
+"""
+
 import tensorflow as tf
 import numpy as np
 import PIL
 
-def load_img(path_to_img):
-  max_dim = 512
-  img = tf.io.read_file(path_to_img)
-  img = tf.image.decode_image(img, channels=3)
-  img = tf.image.convert_image_dtype(img, tf.float32)
+def save_uploaded_files(uploaded_files: list[dict]):
+    """Writes the images uploaded by the user to the current working directory
 
-  shape = tf.cast(tf.shape(img)[:-1], tf.float32)
+    Args:
+        uploaded_files (list[dict]): List of all files to save. 
+        Each file is represented by a dict with parameters:
+        - 'type' (str): The type of image being uploaded (i.e. either 'content' or 'style')
+        - 'img' (st.file_uploader.UploadedFile): The image file uploaded by the user
+    """
+    for file in uploaded_files:
+        file_name = file['type']
+        file_name_with_extension = f'{file_name}.png'
+        with open(file_name_with_extension,"wb") as f:
+            f.write(file['img'].getbuffer())
+
+def load_img_from_path(path_to_img: str):
+  """Returns a tensor of the image at the inputted file path.
+  The tensor has the correct dimensions for being an input into the VGG-19 model.
+
+  Args:
+      path_to_img (str): File path to image
+
+  Returns:
+      tf.Tensor: Image tensor
+  """
+  max_dim = 512
+  img_tensor = tf.io.read_file(path_to_img)
+  img_tensor = tf.image.decode_image(img_tensor, channels=3)
+  img_tensor = tf.image.convert_image_dtype(img_tensor, tf.float32)
+
+  shape = tf.cast(tf.shape(img_tensor)[:-1], tf.float32)
   long_dim = max(shape)
   scale = max_dim / long_dim
 
   new_shape = tf.cast(shape * scale, tf.int32)
 
-  img = tf.image.resize(img, new_shape)
-  img = img[tf.newaxis, :]
-  return img
+  img_tensor = tf.image.resize(img_tensor, new_shape)
+  img_tensor = img_tensor[tf.newaxis, :]
+  return img_tensor
 
-def tensor_to_image(tensor):
-  tensor = tensor*255
+def convert_tensor_to_img(tensor):
+  """ Scales tensor values and converts tensor into an image
+
+  Args:
+      tensor (tf.Tensor): Image tensor
+
+  Returns:
+      Image object
+  """
+  tensor = tensor*255 # Scales tensor values from 0-1 to 0-255 to represent image
   tensor = np.array(tensor, dtype=np.uint8)
+
   if np.ndim(tensor)>3:
     assert tensor.shape[0] == 1
     tensor = tensor[0]
+
   return PIL.Image.fromarray(tensor)

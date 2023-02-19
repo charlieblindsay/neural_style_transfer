@@ -29,8 +29,19 @@ I think this mathematical defition of the 'style' of an image is intriguing; 2 i
 The CNN architecture used is called VGG-19. The weights in each layer are pre-trained on imagenet data.
 
 ##### VGG-19 Architecture
-![alt text](VGG-19.jpg)
+![alt text](VGG-19.png)
 
 To learn more about CNNs, click this link: https://towardsdatascience.com/a-comprehensive-guide-to-convolutional-neural-networks-the-eli5-way-3bd2b1164a53
 
 ## Developer Instructions
+To run the streamlit app locally, enter this command in the terminal: streamlit run c:/PATH/TO/CURRENT/DIRECTORY/app.py
+
+### Files
+- app.py: Streamlit app
+- utils.py: Contains utility functions used in app.py
+- requirements.txt: Contains required Python modules. This file is necessary for hosting the app with Streamlit.
+- model folder: Contains pre-trained model from https://www.tensorflow.org/tutorials/generative/style_transfer
+
+### Future work
+- Add option for the user to choose which layer is chosen to compare the 'content' of the content image and generated image. Choosing earlier layers would lead to high level features being compared, and vice-versa for choosing later layers.
+- Add option to change the relative scaling of the content cost and style cost in the overall cost function. Increasing the scaling of the content cost would increase the importance of 'content' in the generated image and reduce the importance of 'style'.
