@@ -1,14 +1,16 @@
 import streamlit as st
 import tensorflow as tf
-import numpy as np
-import PIL
 
 from utils import *
 
 @st.cache # saves the output
 def load_model():
-    return tf.saved_model.load('model')
+    """_summary_
 
+    Returns:
+        _type_: _description_
+    """
+    return tf.saved_model.load('model')
 
 def save_uploaded_files(uploaded_files: list):
     """Writes 
