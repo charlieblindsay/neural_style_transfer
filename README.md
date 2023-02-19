@@ -1,18 +1,17 @@
 ﻿# Neural Style Transfer
 
-Streamlit app: https://charlieblindsay-neural-style-transfer-app-5cov8f.streamlit.app/
-
 After the user has uploaded a content image and a style image, an image with the 'content' of the content image and the 'style' of style image is generated. For example:
+
 ![alt text](nst_app.jpg)
 
 ## User Instructions
 ### How to generate your own images
-1. Click the above link to open the app. NOTE: the app may take around 30 seconds to load.
+1. Click the above link: https://charlieblindsay-neural-style-transfer-app-5cov8f.streamlit.app/ to open the app. NOTE: the app may take around 30 seconds to load.
 2. Upload the content and style images by clicking on the associated 'Browse files' button.
 3. Wait for the image to be generated.
 
 #### Screen recording showing above steps
-![](https://github.com/charlieblindsay/neural_style_transfer/blob/main/screen_recording.gif)
+![](https://github.com/charlieblindsay/neural_style_transfer/blob/main/screen%20recording.gif)
 
 ### How is this done?
 Machine Learning!
