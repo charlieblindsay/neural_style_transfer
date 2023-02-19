@@ -1,5 +1,4 @@
 """ Contains utility functions used in app.py:
-- save_uploaded_files
 - load_img_from_path
 - convert_tensor_to_img
 """
@@ -7,21 +6,6 @@
 import tensorflow as tf
 import numpy as np
 import PIL
-
-def save_uploaded_files(uploaded_files: list[dict]):
-    """Writes the images uploaded by the user to the current working directory
-
-    Args:
-        uploaded_files (list[dict]): List of all files to save. 
-        Each file is represented by a dict with parameters:
-        - 'type' (str): The type of image being uploaded (i.e. either 'content' or 'style')
-        - 'img' (st.file_uploader.UploadedFile): The image file uploaded by the user
-    """
-    for file in uploaded_files:
-        file_name = file['type']
-        file_name_with_extension = f'{file_name}.png'
-        with open(file_name_with_extension,"wb") as f:
-            f.write(file['img'].getbuffer())
 
 def load_img_from_path(path_to_img: str):
   """Returns a tensor of the image at the inputted file path.
