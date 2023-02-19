@@ -3,7 +3,6 @@
 Streamlit app: https://charlieblindsay-neural-style-transfer-app-5cov8f.streamlit.app/
 
 After the user has uploaded a content image and a style image, an image with the 'content' of the content image and the 'style' of style image is generated. For example:
-
 ![alt text](nst_app.jpg)
 
 ## User Instructions
