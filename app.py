@@ -40,6 +40,7 @@ def save_uploaded_files(uploaded_files: list[dict]):
 
 # Streamlit body text
 st.title('Neural Style Transfer Demo')
+st.write('Find GitHub repository here: https://github.com/charlieblindsay/neural_style_transfer')
 st.write('After the user has uploaded a content image and a style image, an image with the \'content\' of the content image and the \'style\' of style image is generated.')
 st.subheader('File upload')
 
