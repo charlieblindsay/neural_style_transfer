@@ -46,12 +46,11 @@ if content_image_selected != 'None selected':
                 # Displaying images in Streamlit
         cols = st.columns(2)
 
-        titles = ['Content Image', 'Style Image']
-        images = [content_image, style_image]
+        st.title('Content Image')
+        st.image(content_image)
 
-        for i in range(2):
-            cols[i].title(titles[i])
-            cols[i].image(images[i])
+        st.title('Style Image')
+        st.image(style_image)
 
         st.title('Generated Image')
         st.image(generated_image)
