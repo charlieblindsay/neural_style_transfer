@@ -19,17 +19,17 @@ cols[0].title('Content Images')
 cols[1].title('Style Images')
 
 for i in range(3):
-    content_image = Image.open(f'images/{content_images[i]}')
+    content_image = Image.open(f'app_images/{content_images[i]}')
     cols[0].image(content_image)
 
-    style_image = Image.open(f'images/{style_images[i]}')
+    style_image = Image.open(f'app_images/{style_images[i]}')
     cols[1].image(style_image)
 
 st.title('Image selection')
 content_image_selected = st.selectbox('Please select a content image', options = ['None selected', 1, 2, 3])
 style_image_selected = st.selectbox('Please select a style image', options = [1, 2, 3])
 
-if content_image_selected is not 'None selected':
+if content_image_selected != 'None selected':
     with st.spinner('Generating Image. This may take a while...'):
         content_image = load_img_tensor_from_path(f'./app_images/{content_images[content_image_selected - 1]}')
         style_image = load_img_tensor_from_path(f'./app_images/{style_images[style_image_selected - 1]}')
