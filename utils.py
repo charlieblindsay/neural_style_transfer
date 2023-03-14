@@ -49,3 +49,25 @@ def convert_tensor_to_img(tensor):
     tensor = tensor[0]
 
   return PIL.Image.fromarray(tensor)
+
+# @st.cache_resource # saves the output
+def load_model(path: str):
+    """Loads a SavedModel from the folder at the inputted file path.
+    A SavedModel contains both trained parameters and the computation,
+    see https://www.tensorflow.org/guide/saved_model
+
+    Args:
+        path (str): Path to the SavedModel
+
+    Returns:
+        tf.saved_model: The SavedModel object
+    """
+
+    return tf.saved_model.load('model')
+
+def make_grid(cols,rows):
+    grid = [0]*cols
+    for i in range(cols):
+        with st.container():
+            grid[i] = st.columns(rows)
+    return grid

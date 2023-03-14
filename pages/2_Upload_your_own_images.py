@@ -8,21 +8,6 @@ import tensorflow as tf
 
 from utils import *
 
-@st.cache_resource # saves the output
-def load_model(path: str):
-    """Loads a SavedModel from the folder at the inputted file path.
-    A SavedModel contains both trained parameters and the computation,
-    see https://www.tensorflow.org/guide/saved_model
-
-    Args:
-        path (str): Path to the SavedModel
-
-    Returns:
-        tf.saved_model: The SavedModel object
-    """
-
-    return tf.saved_model.load('model')
-
 def save_uploaded_files(uploaded_files: list[dict]):
     """Writes the images uploaded by the user to the current working directory
 
@@ -41,7 +26,7 @@ def save_uploaded_files(uploaded_files: list[dict]):
 # Streamlit body text
 st.title('Neural Style Transfer Demo')
 st.write('Find GitHub repository here: https://github.com/charlieblindsay/neural_style_transfer')
-st.write('After the user has uploaded a content image and a style image, an image with the \'content\' of the content image and the \'style\' of style image is generated.')
+st.write('After you have uploaded a content image and a style image, an image with the \'content\' of the content image and the \'style\' of style image is generated.')
 st.subheader('File upload')
 
 # Streamlit file uploader widgets
