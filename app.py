@@ -9,6 +9,7 @@ from utils import *
 st.title('Neural Style Transfer Demo')
 st.write('Find GitHub repository here: https://github.com/charlieblindsay/neural_style_transfer')
 st.write('After you have selected a content image and a style image from the options below, an image with the \'content\' of the content image and the \'style\' of style image is generated.')
+st.write('You can upload your own images by clicking \'Upload your own images\' in the sidebar.')
 
 content_images = ['collie.png', 'running_james.jfif', 'running_johny.jpg']
 style_images = ['landscape.jpg', 'monet.png', 'scream.jfif']
