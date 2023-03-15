@@ -8,7 +8,7 @@ from utils import *
 # Streamlit body text
 st.title('Neural Style Transfer Demo')
 st.write('Find GitHub repository here: https://github.com/charlieblindsay/neural_style_transfer')
-st.write('After you have selected a content image and a style image, an image with the \'content\' of the content image and the \'style\' of style image is generated.')
+st.write('After you have selected a content image and a style image from the options below, an image with the \'content\' of the content image and the \'style\' of style image is generated.')
 
 content_images = ['collie.png', 'running_james.jfif', 'running_johny.jpg']
 style_images = ['landscape.jpg', 'monet.png', 'scream.jfif']
@@ -26,7 +26,7 @@ for i in range(3):
     style_col.image(style_image)
 
 content_col.title('Image selection')
-style_col.title('----------')
+style_col.title('---------')
 content_image_selected = content_col.selectbox('Please select a content image', options = ['None selected', 1, 2, 3])
 style_image_selected = style_col.selectbox('Please select a style image', options = [1, 2, 3])
 
