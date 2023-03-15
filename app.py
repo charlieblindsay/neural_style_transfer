@@ -13,21 +13,22 @@ st.write('After you have selected a content image and a style image, an image wi
 content_images = ['collie.png', 'running_james.jfif', 'running_johny.jpg']
 style_images = ['landscape.jpg', 'monet.png', 'scream.jfif']
 
-cols = st.columns(2)
+content_col, style_col = st.columns(2)
 
-cols[0].title('Content Images')
-cols[1].title('Style Images')
+content_col.title('Content Images')
+style_col.title('Style Images')
 
 for i in range(3):
     content_image = Image.open(f'app_images/{content_images[i]}')
-    cols[0].image(content_image)
+    content_col.image(content_image)
 
     style_image = Image.open(f'app_images/{style_images[i]}')
-    cols[1].image(style_image)
+    style_col.image(style_image)
 
-st.title('Image selection')
-content_image_selected = st.selectbox('Please select a content image', options = ['None selected', 1, 2, 3])
-style_image_selected = st.selectbox('Please select a style image', options = [1, 2, 3])
+content_col.title('Image selection')
+style_col.title('----------')
+content_image_selected = content_col.selectbox('Please select a content image', options = ['None selected', 1, 2, 3])
+style_image_selected = style_col.selectbox('Please select a style image', options = [1, 2, 3])
 
 if content_image_selected != 'None selected':
     with st.spinner('Generating Image. This may take a while...'):
@@ -43,8 +44,7 @@ if content_image_selected != 'None selected':
         content_image = convert_tensor_to_img(content_image)
         style_image = convert_tensor_to_img(style_image)
 
-                # Displaying images in Streamlit
-        cols = st.columns(2)
+        # Displaying images in Streamlit
 
         st.title('Content Image')
         st.image(content_image)
